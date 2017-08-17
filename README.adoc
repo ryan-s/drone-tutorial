@@ -1,0 +1,134 @@
+= Drone Tutorial - Simple Service
+
+This project is a simple service for demonstrating how to adding drone to a project.
+
+The service doesn't really do much, but it does contains the basic elements of a service project:
+
+* [ ] REST API
+* [ ] Docker packaging
+* [ ] Docker packaging for an external tester (SUT)
+* [ ] docker-compose file, and script for integration testing
+
+:toc:
+
+== REST Interfaces
+
+This application exposes the following REST endpoints on port `8080`
+
+Both methods return the operation and {id} passed in JSON from of {"op":XXX", "id",XXXX}
+
+.Application Interfaces
+[%header,cols="10%,45%,45%"]
+|=======================
+| Operations | End Point | Parameters
+| GET | /api/id/`{id}` | `{id}` is any valid number
+| POST | /api/id/`{id}` | `{id}` is any valid number
+|=======================
+
+Example API Invocation:
+
+.GET
+----
+curl -X GET http://localhost:8080/api/id/123
+# Returns {"op":"GET", "id":123}
+----
+
+.POST
+----
+curl -X POST http://localhost:8080/api/id/123
+# Returns {"op":"POST", "id":123}
+----
+
+.Service Lifecycle Interfaces
+[%header,cols="10%,45%,45%"]
+|=======================
+| Operations | End Point | Description
+| POST | /.service/lifecycle/stop | Signals the service to stop execution
+|=======================
+
+.Example
+----
+curl -X POST http://localhost:8080/.service/lifecycle/stop
+# Returns connection lost
+----
+
+== Quick Start
+
+=== Get the Code
+In a terminal window, execute the following:
+----
+git clone git@github.com:josebarn/drone-tutorial.git
+cd drone-tutorial
+----
+
+=== Build the Docker Container
+In a terminal window, execute the following:
+----
+docker build -t docker-tutorial/hello -f docker/Dockerfile .
+----
+
+=== Build the SUT Docker Container
+In a terminal window, execute the following:
+----
+docker build -t docker-tutorial/sut -f docker/Dockerfile.sut .
+----
+
+=== Run Docker Container
+In a terminal window, execute the following:
+----
+docker run --rm hello-server  docker-tutorial/hello
+----
+
+=== Run Docker-Compose Integration Test
+In another terminal execute the following:
+----
+docker-compose -p ci --file docker-compose.test.yml up --build
+----
+
+CAUTION: *On some MacOS machines - you may get a strange exception as follows, this only seems to occur on MacOS and I haven't taken the time to root cause it as it has something to do with docker and MacOs and not the app for example:*
+
+----
+http: error: ProxyError: HTTPConnectionPool(host='docker.for.mac.localhost', port=62123): Max retries exceeded with url: http://target:8080/api/id/1 (Caused by ProxyError('Cannot connect to proxy.', NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f92ac6d9490>: Failed to establish a new connection: [Errno 111] Connection refused',))) while doing POST request to URL: http://target:8080/api/id/1
+----
+
+=== Building Native
+
+To build natively you will need to have https://golang.org/[`go`] installed - with your GOPATH set.
+
+.Clone the repository into your GOPATH
+----
+cd $GOPATH && mkdir src && cd src/
+git clone git@github.com:josebarn/drone-tutorial.git
+cd drone-tutorial
+----
+
+.Build the project
+----
+go get ./...
+go build -o simple-service
+----
+
+.Build the project
+----
+go test ./api
+----
+
+.Run the Service
+----
+./simple-service
+----
+
+=== Project Structure
+* `docker` - contains the docker files to build the containers for both the `simple service`, and `sut`
+* `api` - contains go code to expose the REST endpoints
+* `model` - contains the model structure for the returned JSON
+* `script` - contains the integration script used with docker-compose.test.yml
+
+
+=== Related Projects
+This project is an adaption of the following project:
+
+* https://github.com/drone-demos/drone-with-go/[drone-with-go]
+
+=== License
+Apache 2.0
