@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "github.com/josebarn/drone-tutorial/api"
+	. "github.com/ryan-s/drone-tutorial/api"
 	"github.com/urfave/cli"
 	"log"
 	"os"

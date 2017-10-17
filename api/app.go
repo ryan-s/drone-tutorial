@@ -2,7 +2,7 @@ package api
 
 import (
 	"context"
-	. "github.com/josebarn/drone-tutorial/model"
+	. "github.com/ryan-s/drone-tutorial/model"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/render"
 	"net/http"

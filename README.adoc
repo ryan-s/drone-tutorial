@@ -1,5 +1,5 @@
 = Drone Tutorial - Simple Service
-
+[![Build Status](https://chu-ci.cloudlockng.com/api/badges/ryan-s/drone-tutorial/status.svg)](https://chu-ci.cloudlockng.com/ryan-s/drone-tutorial)[Latest Build]
 This project is a simple service for demonstrating how to adding drone to a project.
 
 The service doesn't really do much, but it does contains the basic elements of a service project:
